@@ -1,5 +1,7 @@
 # Miracle Fordjour — Data Analyst Portfolio
 
+**Live site: <https://portfolio-six-sooty-91.vercel.app>**
+
 A recruiter-friendly portfolio site built with **Next.js 15 (App Router), React 19, TypeScript and Tailwind CSS 4**.
 It presents 12 analytics projects as searchable cards and full case studies, plus About, Skills, CV and Contact pages.
 
