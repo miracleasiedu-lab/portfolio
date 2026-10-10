@@ -2,6 +2,14 @@
  * Site-wide personal details.
  * Edit this file to update contact details, links and the CV file name.
  */
+function siteUrl(): string {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (explicit) return explicit.replace(/\/+$/, "");
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  if (vercel) return `https://${vercel}`;
+  return "http://localhost:3000";
+}
+
 export const site = {
   name: "Miracle Fordjour",
   role: "Data Analyst",
@@ -14,8 +22,11 @@ export const site = {
   github: "https://github.com/miracleasiedu-lab",
   /** Put your CV PDF at public/cv/<cvFileName>. The download buttons switch on automatically. */
   cvFileName: "Miracle-Fordjour-CV.pdf",
-  /** Set NEXT_PUBLIC_SITE_URL in Vercel (or .env.local) to your live URL. */
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  /**
+   * Live address, used for canonical links, social previews and the sitemap.
+   * On Vercel it is detected automatically; set NEXT_PUBLIC_SITE_URL to override it (e.g. a custom domain).
+   */
+  url: siteUrl(),
   description:
     "Data Analyst in London with 3+ years of experience in SQL, Python, Power BI, Tableau and machine learning. Case studies covering NHS performance, e-commerce, fraud detection, HR attrition and marketing analytics.",
 } as const;
