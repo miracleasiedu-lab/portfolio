@@ -1,0 +1,63 @@
+# Optional: publish the site to GitHub Pages (free, no Vercel account needed).
+# One-time setup: repository Settings → Pages → Source: "GitHub Actions".
+# Then run it from the Actions tab ("Deploy to GitHub Pages" → Run workflow).
+# To redeploy automatically on every push, uncomment the `push` trigger below.
+name: Deploy to GitHub Pages
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: npm ci
+
+      - name: Static export
+        run: npm run build
+        env:
+          STATIC_EXPORT: "1"
+          NEXT_TELEMETRY_DISABLED: 1
+          # Used for canonical URLs and the sitemap. Defaults to the Pages address.
+          NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
+
+      - name: Build self-contained bundle (relative links, works under /<repo>/)
+        run: python3 scripts/build_static.py
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: static-site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

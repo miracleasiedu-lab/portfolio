@@ -1,0 +1,21 @@
+# dependencies
+node_modules/
+
+# build output
+.next/
+out/
+static-site/
+*.tsbuildinfo
+next-env.d.ts
+
+# hosting
+.vercel/
+
+# environment (keep .env.example)
+.env*.local
+.env
+
+# OS / editor
+.DS_Store
+Thumbs.db
+npm-debug.log*

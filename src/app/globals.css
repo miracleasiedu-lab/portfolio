@@ -1,0 +1,205 @@
+@import "tailwindcss";
+
+/* Dark mode follows a .dark class on <html>, set before paint by ThemeScript. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------------
+   Design tokens
+   Navy, white and cyan. Surfaces and ink are swapped for dark mode below, so
+   components only ever use the semantic names (bg-surface, text-ink...).
+--------------------------------------------------------------------------- */
+:root {
+  --color-page: #f4f7fa;
+  --color-surface: #ffffff;
+  --color-surface-2: #eaf0f6;
+  --color-ink: #0b1f3a;
+  --color-ink-2: #3c4f6b;
+  --color-ink-3: #5b6b82;
+  --color-line: #d7e0ea;
+  --color-line-strong: #b7c5d6;
+  --color-accent: #0e7490; /* cyan for text and links on light surfaces (AA) */
+  --color-accent-strong: #155e75;
+  --color-accent-fill: #22d3ee; /* cyan for fills and marks */
+  --color-accent-soft: #e0f7fb;
+  --color-navy: #0b1f3a;
+  --color-navy-deep: #071426;
+  --color-on-navy: #e8f1f8;
+  --color-chart-bar: #0e7490;
+  --color-chart-bar-muted: #9cc9d6;
+  color-scheme: light;
+}
+
+.dark {
+  --color-page: #071426;
+  --color-surface: #0c1d36;
+  --color-surface-2: #11274a;
+  --color-ink: #e8f1f8;
+  --color-ink-2: #b9c8da;
+  --color-ink-3: #8ea2bb;
+  --color-line: #1d3557;
+  --color-line-strong: #2c4a73;
+  --color-accent: #22d3ee;
+  --color-accent-strong: #67e8f9;
+  --color-accent-fill: #22d3ee;
+  --color-accent-soft: #0b3346;
+  --color-navy: #0c1d36;
+  --color-navy-deep: #040d1a;
+  --color-on-navy: #e8f1f8;
+  --color-chart-bar: #22d3ee;
+  --color-chart-bar-muted: #2b5f78;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-page: var(--color-page);
+  --color-surface: var(--color-surface);
+  --color-surface-2: var(--color-surface-2);
+  --color-ink: var(--color-ink);
+  --color-ink-2: var(--color-ink-2);
+  --color-ink-3: var(--color-ink-3);
+  --color-line: var(--color-line);
+  --color-line-strong: var(--color-line-strong);
+  --color-accent: var(--color-accent);
+  --color-accent-strong: var(--color-accent-strong);
+  --color-accent-fill: var(--color-accent-fill);
+  --color-accent-soft: var(--color-accent-soft);
+  --color-navy: var(--color-navy);
+  --color-navy-deep: var(--color-navy-deep);
+  --color-on-navy: var(--color-on-navy);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--color-page);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: var(--color-accent-fill);
+    color: #071426;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent-fill);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  /* Display headings use the serif. Sizes follow a 1.25 modular scale. */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.04;
+  }
+  .num {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .prose-body {
+    max-width: 68ch;
+    color: var(--color-ink-2);
+    line-height: 1.7;
+  }
+  .prose-body p + p {
+    margin-top: 1rem;
+  }
+  .link {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .link:hover {
+    color: var(--color-accent-strong);
+    text-decoration-thickness: 2px;
+  }
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -4rem;
+    z-index: 100;
+    background: var(--color-surface);
+    color: var(--color-ink);
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-line-strong);
+  }
+  .skip-link:focus {
+    top: 1rem;
+  }
+}
+
+/* The single orchestrated moment: the hero ledger rows reveal in sequence. */
+@keyframes ledger-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes bar-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.ledger-row {
+  animation: ledger-in 520ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.ledger-bar {
+  transform-origin: left;
+  animation: bar-grow 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .ledger-row,
+  .ledger-bar {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print: the CV page prints cleanly. */
+@media print {
+  header,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
+}
